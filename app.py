@@ -210,7 +210,7 @@ st.markdown(f'''
     <div class="logo-icon-wrap">🍌</div>
     <div class="logo-name">Banana<span>Lens</span></div>
   </div>
-  <div class="header-desc">Klasifikasi Kematangan Pisang — MobileNetV2 CNN</div>
+  <div class="header-desc">Klasifikasi Kematangan Pisang Untuk Menentukan Kandungan Nutrisi — MobileNetV2 CNN</div>
   {warn}
 </div>
 ''', unsafe_allow_html=True)
