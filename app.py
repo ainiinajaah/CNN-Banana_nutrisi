@@ -146,7 +146,7 @@ NUTRISI = {
 # ── Model ─────────────────────────────────────────────────────────────────────
 @st.cache_resource(show_spinner="Memuat model CNN…")
 def load_banana_model():
-    path = 'model/banana.keras'
+    path = 'model/pisang.keras'
     if not os.path.exists(path):
         return None
     try:
