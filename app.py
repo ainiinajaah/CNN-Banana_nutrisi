@@ -1,4 +1,4 @@
-import os, io, base64, time, datetime
+import os, io, base64, datetime
 import numpy as np
 import streamlit as st
 from PIL import Image
@@ -40,22 +40,6 @@ body{font-family:var(--ffi);background:var(--bg);color:var(--text)}
 .upload-area h3{font-family:var(--ff);font-size:15px;font-weight:600;margin-bottom:4px}
 .upload-area p{font-size:13px;color:var(--muted)}
 .upload-fmt{font-size:11px;color:#A89070;letter-spacing:0.05em;margin-top:10px}
-.rt-right{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:14px;min-height:200px}
-.rt-result-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;color:var(--muted);text-align:center}
-.rt-result-empty p{font-size:13px}
-.rt-thumb-row{display:flex;gap:10px;align-items:center;margin-bottom:12px;padding-bottom:12px;border-bottom:0.5px solid var(--border)}
-.rt-thumb-row img{width:64px;height:64px;border-radius:8px;object-fit:cover;border:0.5px solid var(--border);flex-shrink:0}
-.rt-kelas-info{flex:1;min-width:0}
-.rt-kelas{font-family:var(--ff);font-size:18px;font-weight:700;margin-bottom:4px}
-.rt-conf-row{display:flex;align-items:center;gap:8px;margin-top:6px}
-.rt-prob-wrap{margin-bottom:12px;padding-bottom:12px;border-bottom:0.5px solid var(--border)}
-.rt-nutrisi-title{font-family:var(--ff);font-size:12px;font-weight:600;margin-bottom:8px;color:var(--muted)}
-.rt-timestamp{font-size:10px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border)}
-.status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,0.65);color:#fff;font-size:11px;border-radius:100px;padding:4px 12px;margin-bottom:10px}
-.pulse-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;animation:pulseDot 1.2s ease-in-out infinite}
-.pulse-dot.scanning{background:#F5A623}
-.pulse-dot.paused{background:#aaa;animation:none}
-@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
 .preview-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:14px}
 .preview-inner{display:flex;gap:14px;align-items:center}
 .preview-inner img{width:80px;height:80px;border-radius:var(--r-md);object-fit:cover;border:0.5px solid var(--border);display:block;flex-shrink:0}
@@ -214,33 +198,6 @@ def result_html(pil_img, pcls, conf, probs):
         f'</div>'
     )
 
-def rt_result_html(pil_img, pcls, conf, probs, ts):
-    label = LABEL_MAP[pcls]; emoji = EMOJI[pcls]; bdg = BADGE_CLS[pcls]
-    b64   = pil_to_b64(pil_img)
-    return (
-        f'<div class="rt-thumb-row">'
-        f'<img src="data:image/jpeg;base64,{b64}"/>'
-        f'<div class="rt-kelas-info">'
-        f'<div class="rt-kelas">{label}</div>'
-        f'<span class="badge {bdg}">{emoji} {label}</span>'
-        f'<div class="rt-conf-row">'
-        f'<div class="conf-bar-outer"><div class="conf-bar-inner" style="width:{conf:.1f}%"></div></div>'
-        f'<span class="conf-pct">{conf:.1f}%</span>'
-        f'</div></div></div>'
-        f'<div class="rt-prob-wrap">'
-        f'<div class="prob-section-title">Probabilitas</div>'
-        f'{prob_bars_html(probs)}'
-        f'</div>'
-        f'<div class="rt-nutrisi-title">Nutrisi Pisang {label}</div>'
-        f'{nutrisi_html(pcls)}'
-        f'<div class="rt-timestamp">🕐 Update terakhir: {ts}</div>'
-    )
-
-# ── Session state ─────────────────────────────────────────────────────────────
-for k, v in {'rt_paused': False, 'rt_ms': 2000, 'rt_result': None}.items():
-    if k not in st.session_state:
-        st.session_state[k] = v
-
 model = load_banana_model()
 
 # ── HEADER ────────────────────────────────────────────────────────────────────
@@ -262,7 +219,7 @@ st.markdown(f'''
 ''', unsafe_allow_html=True)
 
 # ── TABS ──────────────────────────────────────────────────────────────────────
-tab_up, tab_photo, tab_rt = st.tabs(["📁  Upload", "📷  Kamera Foto", "🔍  Real-time"])
+tab_up, tab_photo = st.tabs(["📁  Upload", "📷  Kamera Foto"])
 
 # ══════════════════════════════════════════════════
 # TAB 1 — UPLOAD
@@ -340,94 +297,5 @@ with tab_photo:
                         st.markdown(result_html(pil, pcls, conf, probs), unsafe_allow_html=True)
                     except Exception as e:
                         st.markdown(f'<div class="error-card"><div class="error-icon">⚠️</div><p class="error-msg">Gagal: {e}</p></div>', unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════
-# TAB 3 — REAL-TIME
-# ══════════════════════════════════════════════════
-with tab_rt:
-    st.markdown('<div class="step-label">Kamera — Scan Real-time</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="interval-label">⏱ Interval scan:</div>', unsafe_allow_html=True)
-    ms_options = {'1 dtk': 1000, '2 dtk': 2000, '3 dtk': 3000}
-    iv_cols = st.columns(3)
-    for i, (lbl, ms_val) in enumerate(ms_options.items()):
-        with iv_cols[i]:
-            is_act = st.session_state.rt_ms == ms_val
-            if st.button(lbl, key=f"iv_{ms_val}",
-                         type="primary" if is_act else "secondary"):
-                st.session_state.rt_ms = ms_val
-                st.rerun()
-
-    ctrl = st.columns(3)
-    with ctrl[0]:
-        if st.button("⏸  Pause", key="btn_pause",
-                     disabled=st.session_state.rt_paused):
-            st.session_state.rt_paused = True
-            st.rerun()
-    with ctrl[1]:
-        if st.button("▶  Resume", key="btn_resume",
-                     disabled=not st.session_state.rt_paused):
-            st.session_state.rt_paused = False
-            st.rerun()
-    with ctrl[2]:
-        if st.button("⏹  Stop", key="btn_stop"):
-            st.session_state.rt_paused = True
-            st.session_state.rt_result = None
-            st.rerun()
-
-    if st.session_state.rt_paused:
-        st.markdown(
-            '<div style="margin:8px 0 12px">'
-            '<span class="status-badge"><span class="pulse-dot paused"></span> ⏸ Dijeda</span>'
-            '</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(
-            '<div style="margin:8px 0 12px">'
-            '<span class="status-badge"><span class="pulse-dot scanning"></span> 🔍 Scanning otomatis…</span>'
-            '</div>', unsafe_allow_html=True)
-
-    col_cam, col_res = st.columns(2)
-
-    with col_cam:
-        rt_frame = st.camera_input(
-            "Arahkan kamera ke pisang",
-            label_visibility="collapsed",
-            key="rt_cam"
-        )
-
-    with col_res:
-        res_slot = st.empty()
-        if st.session_state.rt_result:
-            res_slot.markdown(
-                f'<div class="rt-right fade-in">{st.session_state.rt_result}</div>',
-                unsafe_allow_html=True)
-        else:
-            res_slot.markdown('''
-            <div class="rt-right">
-              <div class="rt-result-empty">
-                <i class="ti ti-eye-off" style="font-size:32px;color:var(--muted);margin-bottom:8px;display:block"></i>
-                <p>Hasil scan akan muncul di sini</p>
-              </div>
-            </div>''', unsafe_allow_html=True)
-
-    if rt_frame and not st.session_state.rt_paused and model:
-        pil = Image.open(rt_frame)
-        ts  = datetime.datetime.now().strftime('%H:%M:%S')
-        try:
-            pcls, conf, probs = predict_pil(model, pil)
-            st.session_state.rt_result = rt_result_html(pil, pcls, conf, probs, ts)
-            res_slot.markdown(
-                f'<div class="rt-right fade-in">{st.session_state.rt_result}</div>',
-                unsafe_allow_html=True)
-        except Exception as e:
-            res_slot.markdown(
-                f'<div class="rt-right"><div class="error-card">'
-                f'<div class="error-icon">⚠️</div>'
-                f'<p class="error-msg">Error: {e}</p>'
-                f'</div></div>', unsafe_allow_html=True)
-
-    if not st.session_state.rt_paused:
-        time.sleep(st.session_state.rt_ms / 1000)
-        st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
