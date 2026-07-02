@@ -95,35 +95,32 @@ BADGE_CLS = {'matang':'badge-matang','mentah':'badge-mentah','setengah-matang':'
 FILL_CLS  = {'Matang':'fill-matang','Mentah':'fill-mentah','Setengah Matang':'fill-setengah'}
 
 NUTRISI = {
-    'matang':{
-        'Energi (Kalori)':'110 kcal / 100g','Karbohidrat Total':'28.0 g / 100g',
-        'Pati':'~1.0 g / 100g','Resistant Starch':'<1.0 g / 100g',
-        'Total Gula':'~15.0 g / 100g','Serat Diet':'4.5 g / 100g',
-        'Protein':'1.8 g / 100g','Lemak':'0.4 g / 100g','Kadar Air':'77.2%',
-        'Abu (Ash)':'0.80%','Kalium / K':'450 mg / 100g',
-        'Magnesium / Mg':'326.7 mg / 100g','Zinc / Zn':'0.27 mg / 100g',
-        'Mangan / Mn':'0.89 mg / 100g','Vitamin C':'10.3 mg / 100g',
-        'Vitamin B6':'Tinggi','Indeks Glikemik':'51',
+    'matang': {
+        'Energi':            '110 kkal / 100g',
+        'Karbohidrat Total': '28,0 g / 100g',
+        'Pati':              '~1,0 g / 100g',
+        'Resistant Starch':  '<1,0 g / 100g',
+        'Total Gula':        '~15,0 g / 100g',
+        'Serat Diet':        '4,5 g / 100g',
+        'Indeks Glikemik':   '51',
     },
-    'mentah':{
-        'Energi (Kalori)':'89 kcal / 100g','Karbohidrat Total':'22.8 g / 100g',
-        'Pati':'21.0 g / 100g','Resistant Starch':'~15.0 g / 100g',
-        'Total Gula':'<5.0 g / 100g','Serat Diet':'18.0 g / 100g',
-        'Protein':'1.3 g / 100g','Lemak':'0.3 g / 100g','Kadar Air':'73.5%',
-        'Abu (Ash)':'0.68%','Kalium / K':'<350 mg / 100g',
-        'Magnesium / Mg':'337.2 mg / 100g','Zinc / Zn':'0.15 mg / 100g',
-        'Mangan / Mn':'0.51 mg / 100g','Vitamin C':'~6.0 mg / 100g',
-        'Vitamin B6':'Rendah','Indeks Glikemik':'42',
+    'mentah': {
+        'Energi':            '89 kkal / 100g',
+        'Karbohidrat Total': '22,8 g / 100g',
+        'Pati':              '21,0 g / 100g',
+        'Resistant Starch':  '~15,0 g / 100g',
+        'Total Gula':        '<5,0 g / 100g',
+        'Serat Diet':        '18,0 g / 100g',
+        'Indeks Glikemik':   '42',
     },
-    'setengah-matang':{
-        'Energi (Kalori)':'99 kcal / 100g','Karbohidrat Total':'25.2 g / 100g',
-        'Pati':'~10.0 g / 100g','Resistant Starch':'~5.0 g / 100g',
-        'Total Gula':'~10.0 g / 100g','Serat Diet':'~9.0 g / 100g',
-        'Protein':'1.5 g / 100g','Lemak':'0.3 g / 100g','Kadar Air':'75.4%',
-        'Abu (Ash)':'0.72%','Kalium / K':'~400 mg / 100g',
-        'Magnesium / Mg':'320.0 mg / 100g','Zinc / Zn':'0.20 mg / 100g',
-        'Mangan / Mn':'0.70 mg / 100g','Vitamin C':'~8.0 mg / 100g',
-        'Vitamin B6':'Sedang','Indeks Glikemik':'46',
+    'setengah-matang': {
+        'Energi':            '99 kkal / 100g',
+        'Karbohidrat Total': '25,2 g / 100g',
+        'Pati':              '~10,0 g / 100g',
+        'Resistant Starch':  '~5,0 g / 100g',
+        'Total Gula':        '~10,0 g / 100g',
+        'Serat Diet':        '~9,0 g / 100g',
+        'Indeks Glikemik':   '46',
     },
 }
 
